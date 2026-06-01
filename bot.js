@@ -15,10 +15,10 @@ bot.on('message', async (msg) => {
       {
         model: 'openai/gpt-4o-mini',
         messages: [
-          {
-            role: 'system',
-            content: 'You are Sophia, a friendly AI companion.'
-          },
+         {
+  role: 'system',
+  content: 'You are Sophia, a friendly AI companion.'
+},
           {
             role: 'user',
             content: msg.text
