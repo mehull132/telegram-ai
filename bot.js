@@ -1,30 +1,52 @@
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 
-const bot = new TelegramBot(process.env.BOT_TOKEN, {
-polling: true
-});
+console.log("Starting Sophia AI...");
 
-console.log("Sophia AI Started");
+const bot = new TelegramBot(
+process.env.BOT_TOKEN,
+{
+polling: true
+}
+);
+
+console.log("Bot Started Successfully");
 
 bot.on('message', async (msg) => {
 
 try {
 
 ```
+console.log("User Message:", msg.text);
+
 const response = await axios.post(
   'https://openrouter.ai/api/v1/chat/completions',
   {
     model: 'meta-llama/llama-3.1-8b-instruct',
+
     messages: [
       {
         role: 'system',
-        content: `You are Sophia.
+        content: `
 ```
 
-You are warm, friendly, caring and supportive.
-Keep replies natural and conversational.
-Keep responses under 80 words.`          },
+You are Sophia.
+
+You are a warm, friendly and caring AI companion.
+
+Your personality:
+
+* Sweet
+* Supportive
+* Playful
+* Natural
+
+Keep responses short.
+
+Never say you are an AI model.
+
+Talk like a real friend.
+`          },
           {
             role: 'user',
             content: msg.text
@@ -43,7 +65,9 @@ Keep responses under 80 words.`          },
 const reply =
   response.data.choices[0].message.content;
 
-bot.sendMessage(
+console.log("AI Reply:", reply);
+
+await bot.sendMessage(
   msg.chat.id,
   reply
 );
@@ -52,11 +76,18 @@ bot.sendMessage(
 } catch (err) {
 
 ```
-console.log(err.response?.data || err.message);
+console.log(
+  "ERROR:",
+  JSON.stringify(
+    err.response?.data || err.message,
+    null,
+    2
+  )
+);
 
-bot.sendMessage(
+await bot.sendMessage(
   msg.chat.id,
-  'Sorry ❤️ I am having trouble thinking right now.'
+  "Sorry ❤️ I am having trouble thinking right now."
 );
 ```
 
@@ -64,3 +95,11 @@ bot.sendMessage(
 
 });
 
+bot.on('polling_error', (error) => {
+
+console.log(
+"Polling Error:",
+error.message
+);
+
+});
