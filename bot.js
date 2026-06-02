@@ -5,6 +5,10 @@ const {
   addMessage,
   getMessages
 } = require('./memory');
+const {
+  saveProfile,
+  getProfile
+} = require('./profile');
 
 console.log("BOT STARTED");
 
