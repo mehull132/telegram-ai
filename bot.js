@@ -1,3 +1,4 @@
+console.log("BOT STARTED");
 console.log("Message:", msg.text);
 
 const response = await axios.post(
