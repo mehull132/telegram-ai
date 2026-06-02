@@ -13,6 +13,8 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
 
 bot.on('message', async (msg) => {
 
+  if (!msg.text) return;
+
   const userId = msg.chat.id;
 
   console.log("Message:", msg.text);
@@ -100,9 +102,7 @@ await bot.sendMessage(
   msg.chat.id,
   reply
 );
-
-    await bot.sendMessage(msg.chat.id, reply);
-
+    
   } catch (error) {
 
     console.log(error);
