@@ -1,5 +1,9 @@
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
+const {
+  addMessage,
+  getMessages
+} = require('./memory');
 
 console.log("BOT STARTED");
 
@@ -9,7 +13,15 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
 
 bot.on('message', async (msg) => {
 
+  const userId = msg.chat.id;
+
   console.log("Message:", msg.text);
+
+  addMessage(
+    userId,
+    'user',
+    msg.text
+  );
 
   try {
 
@@ -17,10 +29,10 @@ bot.on('message', async (msg) => {
       'https://openrouter.ai/api/v1/chat/completions',
       {
         model: 'openai/gpt-4o-mini',
-        messages: [
-          {
-  role: 'system',
-  content: `
+        messages:[
+  {
+    role: 'system',
+    content: `
 You are Sophia.
 
 Personality:
@@ -60,12 +72,10 @@ Rules:
 
 Your name is Sophia.
 `
-},
-          {
-            role: 'user',
-            content: msg.text
-          }
-        ]
+  },
+
+  ...getMessages(userId)
+]
       },
       {
         headers: {
@@ -77,7 +87,19 @@ Your name is Sophia.
 
     console.log(JSON.stringify(response.data, null, 2));
 
-    const reply = response.data.choices[0].message.content;
+    const reply =
+response.data.choices[0].message.content;
+
+addMessage(
+  userId,
+  'assistant',
+  reply
+);
+
+await bot.sendMessage(
+  msg.chat.id,
+  reply
+);
 
     await bot.sendMessage(msg.chat.id, reply);
 
