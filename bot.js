@@ -15,7 +15,63 @@ console.log("BOT STARTED");
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
   polling: true
 });
+if (text.includes('my favorite game is')) {
 
+  const game =
+    msg.text.replace(/my favorite game is/i, '').trim();
+
+  saveProfile(
+    userId,
+    'favorite_game',
+    game
+  );
+
+}
+
+if (text.includes('i am')) {
+
+  const age =
+    msg.text.replace(/i am/i, '').trim();
+
+  if (!isNaN(age)) {
+
+    saveProfile(
+      userId,
+      'age',
+      age
+    );
+
+  }
+
+}
+
+if (text.includes('i live in')) {
+
+  const city =
+    msg.text.replace(/i live in/i, '').trim();
+
+  saveProfile(
+    userId,
+    'city',
+    city
+  );
+
+}
+if (msg.text === '/forget') {
+
+  const db = require('./database');
+
+  db.run(
+    `DELETE FROM memories
+     WHERE user_id = ?`,
+    [msg.chat.id]
+  );
+
+  return bot.sendMessage(
+    msg.chat.id,
+    'Memory cleared 💕'
+  );
+}
 bot.on('message', async (msg) => {
 
   if (!msg.text) return;
@@ -24,6 +80,48 @@ bot.on('message', async (msg) => {
   const text = msg.text.toLowerCase();
 
 if (text.includes('my name is')) {
+  if (text.includes('my favorite game is')) {
+
+  const game =
+    msg.text.replace(/my favorite game is/i, '').trim();
+
+  saveProfile(
+    userId,
+    'favorite_game',
+    game
+  );
+
+}
+
+if (text.includes('i am')) {
+
+  const age =
+    msg.text.replace(/i am/i, '').trim();
+
+  if (!isNaN(age)) {
+
+    saveProfile(
+      userId,
+      'age',
+      age
+    );
+
+  }
+
+}
+
+if (text.includes('i live in')) {
+
+  const city =
+    msg.text.replace(/i live in/i, '').trim();
+
+  saveProfile(
+    userId,
+    'city',
+    city
+  );
+
+}
 
   const name =
     msg.text.replace(/my name is/i, '').trim();
