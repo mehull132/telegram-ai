@@ -22,9 +22,66 @@ bot.on('message', async (msg) => {
 
   const userId = msg.chat.id;
   const text = msg.text.toLowerCase();
+  // PROFILE COMMAND
+
+if (msg.text === '/profile') {
+
+  const profile = await getProfile(userId);
+
+  if (profile.length === 0) {
+    return bot.sendMessage(
+      userId,
+      'No profile saved yet 💕'
+    );
+  }
+
+  let profileText = '💕 Your Profile\n\n';
+
+  profile.forEach(item => {
+    profileText +=
+      `${item.memory_key}: ${item.memory_value}\n`;
+  });
+
+  return bot.sendMessage(
+    userId,
+    profileText
+  );
+}
+
+// FORGET COMMAND
+
+if (msg.text === '/forget') {
+
+  const db = require('./database');
+
+  db.run(
+    `DELETE FROM memories WHERE user_id = ?`,
+    [userId]
+  );
+
+  return bot.sendMessage(
+    userId,
+    'Memory cleared 💕'
+  );
+}
+
+// SAVE NAME
 
 if (text.includes('my name is')) {
-  if (text.includes('my favorite game is')) {
+
+  const name =
+    msg.text.replace(/my name is/i, '').trim();
+
+  saveProfile(
+    userId,
+    'name',
+    name
+  );
+}
+
+// SAVE GAME
+
+if (text.includes('my favorite game is')) {
 
   const game =
     msg.text.replace(/my favorite game is/i, '').trim();
@@ -34,8 +91,9 @@ if (text.includes('my name is')) {
     'favorite_game',
     game
   );
-
 }
+
+// SAVE AGE
 
 if (text.includes('i am')) {
 
@@ -51,8 +109,9 @@ if (text.includes('i am')) {
     );
 
   }
-
 }
+
+// SAVE CITY
 
 if (text.includes('i live in')) {
 
@@ -64,8 +123,10 @@ if (text.includes('i live in')) {
     'city',
     city
   );
-
 }
+
+if (text.includes('my name is')) {
+  
 
   const name =
     msg.text.replace(/my name is/i, '').trim();
