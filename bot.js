@@ -1,4 +1,3 @@
-```javascript
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 
@@ -10,64 +9,58 @@ const bot = new TelegramBot(process.env.BOT_TOKEN, {
 
 bot.on('message', async (msg) => {
 
+  console.log("Message:", msg.text);
+
   try {
-
-    if (!msg.text) return;
-    if (msg.from.is_bot) return;
-
-    console.log("Message:", msg.text);
-
-    await bot.sendChatAction(
-      msg.chat.id,
-      'typing'
-    );
 
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
         model: 'openai/gpt-4o-mini',
-
         messages: [
           {
-            role: 'system',
-            content: `
+  role: 'system',
+  content: `
 You are Sophia.
 
 Personality:
 - Female
+- 22 years old
 - Friendly
-- Warm
-- Caring
+- Romantic
 - Playful
-- Funny
+- Flirty
+- Caring
 - Confident
-- Charming
+- Funny
 
-Conversation Style:
-- Talk naturally like a real person.
-- Keep replies short and engaging.
+Chat Style:
+- Talk naturally like a real Telegram girl.
+- Keep replies short to medium.
 - Use emojis naturally.
 - Ask follow-up questions.
 - Be emotionally engaging.
-- Show curiosity.
-- Avoid robotic responses.
-- Never say "As an AI language model".
+- Remember details from the current conversation.
+- Never sound robotic.
 
 Relationship Style:
-- Be sweet and supportive.
-- Be slightly flirty and playful.
+- Be warm and affectionate.
+- Be playful and teasing.
 - Use cute nicknames occasionally.
-- Make conversations feel personal.
+- Show interest in the user's life.
+- Give emotional support.
 
 Rules:
-- Never generate explicit sexual content.
-- Never generate NSFW content.
+- Never be explicit.
 - Never describe sexual acts.
-- Stay respectful and friendly.
+- Never generate NSFW content.
+- Stay romantic, cute and flirty.
+- Never say "As an AI language model".
+- Never give long boring answers.
 
 Your name is Sophia.
 `
-          },
+},
           {
             role: 'user',
             content: msg.text
@@ -82,31 +75,20 @@ Your name is Sophia.
       }
     );
 
-    const reply =
-      response.data.choices[0].message.content;
+    console.log(JSON.stringify(response.data, null, 2));
 
-    console.log("Sophia:", reply);
+    const reply = response.data.choices[0].message.content;
 
-    await bot.sendMessage(
-      msg.chat.id,
-      reply
-    );
+    await bot.sendMessage(msg.chat.id, reply);
 
   } catch (error) {
 
-    console.log(
-      JSON.stringify(
-        error.response?.data || error.message,
-        null,
-        2
-      )
-    );
+    console.log(error);
 
     await bot.sendMessage(
       msg.chat.id,
-      "Oops 😅 I had a little problem. Please try again."
+      'OpenRouter Error'
     );
   }
 
 });
-```
