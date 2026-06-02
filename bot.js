@@ -21,6 +21,21 @@ bot.on('message', async (msg) => {
   if (!msg.text) return;
 
   const userId = msg.chat.id;
+  const text = msg.text.toLowerCase();
+
+if (text.includes('my name is')) {
+
+  const name =
+    msg.text.replace(/my name is/i, '').trim();
+
+  saveProfile(
+    userId,
+    'name',
+    name
+  );
+
+  console.log('Saved Name:', name);
+}
 
   console.log("Message:", msg.text);
 
@@ -29,6 +44,13 @@ bot.on('message', async (msg) => {
     'user',
     msg.text
   );
+  const profile =
+  await getProfile(userId);
+
+const profileText =
+  profile.map(
+    p => `${p.memory_key}: ${p.memory_value}`
+  ).join('\n');
 
   try {
 
@@ -41,6 +63,11 @@ bot.on('message', async (msg) => {
     role: 'system',
     content: `
 You are Sophia.
+Known User Information:
+
+${profileText}
+
+Remember these details and use them naturally.
 
 Personality:
 - Female
