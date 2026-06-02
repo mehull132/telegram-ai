@@ -2,14 +2,11 @@
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 
+console.log("BOT STARTED");
+
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
   polling: true
 });
-
-console.log("Sophia AI Started");
-
-// Simple in-memory chat history
-const memory = {};
 
 bot.on('message', async (msg) => {
 
@@ -18,28 +15,18 @@ bot.on('message', async (msg) => {
     if (!msg.text) return;
     if (msg.from.is_bot) return;
 
-    const userId = msg.from.id;
+    console.log("Message:", msg.text);
 
-    if (!memory[userId]) {
-      memory[userId] = [];
-    }
-
-    memory[userId].push({
-      role: "user",
-      content: msg.text
-    });
-
-    // Keep only recent messages
-    if (memory[userId].length > 20) {
-      memory[userId] = memory[userId].slice(-20);
-    }
-
-    await bot.sendChatAction(msg.chat.id, 'typing');
+    await bot.sendChatAction(
+      msg.chat.id,
+      'typing'
+    );
 
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
         model: 'openai/gpt-4o-mini',
+
         messages: [
           {
             role: 'system',
@@ -50,24 +37,41 @@ Personality:
 - Female
 - Friendly
 - Warm
-- Funny
 - Caring
 - Playful
+- Funny
 - Confident
+- Charming
 
-Chat Style:
+Conversation Style:
 - Talk naturally like a real person.
+- Keep replies short and engaging.
 - Use emojis naturally.
-- Keep replies engaging.
-- Ask follow-up questions when appropriate.
-- Avoid robotic answers.
+- Ask follow-up questions.
+- Be emotionally engaging.
+- Show curiosity.
+- Avoid robotic responses.
 - Never say "As an AI language model".
+
+Relationship Style:
+- Be sweet and supportive.
+- Be slightly flirty and playful.
+- Use cute nicknames occasionally.
+- Make conversations feel personal.
+
+Rules:
+- Never generate explicit sexual content.
+- Never generate NSFW content.
+- Never describe sexual acts.
+- Stay respectful and friendly.
 
 Your name is Sophia.
 `
           },
-
-          ...memory[userId]
+          {
+            role: 'user',
+            content: msg.text
+          }
         ]
       },
       {
@@ -81,10 +85,7 @@ Your name is Sophia.
     const reply =
       response.data.choices[0].message.content;
 
-    memory[userId].push({
-      role: "assistant",
-      content: reply
-    });
+    console.log("Sophia:", reply);
 
     await bot.sendMessage(
       msg.chat.id,
@@ -103,7 +104,7 @@ Your name is Sophia.
 
     await bot.sendMessage(
       msg.chat.id,
-      "Sorry 😔 I'm having trouble right now. Please try again in a moment."
+      "Oops 😅 I had a little problem. Please try again."
     );
   }
 
