@@ -1,3 +1,5 @@
+console.log("PID:", process.pid);
+console.log("Started:", new Date().toISOString());
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
 require('./database');
@@ -15,6 +17,7 @@ console.log("BOT STARTED");
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
   polling: true
 });
+console.log("Polling Started");
 
 bot.on('message', async (msg) => {
 
