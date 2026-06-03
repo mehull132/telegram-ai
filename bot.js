@@ -1,4 +1,9 @@
 console.log("PID:", process.pid);
+
+setInterval(() => {
+  console.log("BOT ALIVE", new Date().toISOString());
+}, 60000);
+console.log("PID:", process.pid);
 console.log("Started:", new Date().toISOString());
 const TelegramBot = require('node-telegram-bot-api');
 const axios = require('axios');
