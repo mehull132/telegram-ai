@@ -160,6 +160,18 @@ const profileText =
 
   try {
 
+    await bot.sendChatAction(
+      msg.chat.id,
+      'typing'
+    );
+
+    const delay =
+      Math.floor(Math.random() * 2000) + 1000;
+
+    await new Promise(resolve =>
+      setTimeout(resolve, delay)
+    );
+    
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
